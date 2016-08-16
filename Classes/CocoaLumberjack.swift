@@ -62,7 +62,7 @@ public func SwiftLogMacro(isAsynchronous: Bool, level: DDLogLevel, flag flg: DDL
 public func _DDLogMessage(_ message: @autoclosure() -> String, level: DDLogLevel, flag: DDLogFlag, context: Int, file: StaticString, function: StaticString, line: UInt, tag: AnyObject?, asynchronous: Bool, ddlog: DDLog) {
     if level.rawValue & flag.rawValue != 0 {
         // Tell the DDLogMessage constructor to copy the C strings that get passed to it.
-        let logMessage = DDLogMessage(message: message(), level: level, flag: flag, context: context, file: String(file), function: String(function), line: line, tag: tag, options: [.copyFile, .copyFunction], timestamp: nil)
+        let logMessage = DDLogMessage(message: message(), level: level, flag: flag, context: context, file: String(describing: file), function: String(describing: function), line: line, tag: tag, options: [.copyFile, .copyFunction], timestamp: nil)
         ddlog.log(asynchronous, message: logMessage)
     }
 }
@@ -91,14 +91,14 @@ public func DDLogError(_ message: @autoclosure() -> String, level: DDLogLevel = 
 ///
 /// Analogous to the C preprocessor macro `THIS_FILE`.
 public func CurrentFileName(fileName: StaticString = #file) -> String {
-    var str = NSString(string: String(fileName))
+    var str = NSString(string: String(describing: fileName))
     var range = str.range(of: "/", options: .backwards)
     var index = range.location + range.length
-    str = str.substring(from: index)
+    str = str.substring(from: index) as NSString
     
     range = str.range(of: ".", options: .backwards)
     index = range.location
-    str = str.substring(to: index)
+    str = str.substring(to: index) as NSString
     
     return str as String
 }
